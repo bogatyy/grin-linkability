@@ -3,9 +3,9 @@
 **TL;DR: I modified a Grin full node into a sniffer node that logs all intermediary transaction gossiping data,
 including not-yet-aggregated transactions. Using this data, I was able to trace 96% of all Grin transactions,
 revealing the transaction graph almost fully and uncovering who paid who in the Grin network.
-For a longer summary, check out the FAQ at the end.**
+For a longer summary, check out the [FAQ](https://github.com/bogatyy/grin-data#faq) at the end.**
 
-Grin, a privacy coin with a design that's uniquely distinct from either ZCash or Monero, has been the most mysterious
+Grin, a privacy coin with a design that's uniquely distinct from either Zcash or Monero, has been the most mysterious
 cypherpunk project since Bitcoin itself. It started with MimbleWimble, a protocol specification that was published
 anonymously on a Tor hosting service in 2016. Later, an anonymous team of developers working under Harry Potter-themed
 names banded together and decided to implement MimbleWimble in a cryptocurrency, now called Grin. Grin's mainnet
@@ -24,9 +24,10 @@ But Grin has four key new features that aim to enhance its privacy.
 [CoinJoin](https://bitcoinmagazine.com/articles/coinjoin-combining-bitcoin-transactions-to-obfuscate-trails-and-increase-privacy-1465235087/).
 As a result, each block is a single bundle of inputs and outputs, allowing to **hide the transaction graph**,
 with no easy way to determine who paid who within a block.
-3. There are no addresses, only UTXOs hidden as Pedersen commitments. One downside of this approach is that
-the sender and the receiver need to communicate with each other off-chain (which makes wallet implementations and
-exchange integrations more complex).
+3. There are no addresses, only UTXOs hidden as
+[Pedersen commitments](https://github.com/mimblewimble/grin/blob/master/doc/switch_commitment.md).
+One downside of this approach is that the sender and the receiver need to communicate with each other off-chain
+(which makes wallet implementations and exchange integrations more complex).
 4. Grin uses "patient Dandelion", an enhanced version of Bitcoin's Dandelion proposal, which **hide the IP addresses**
 that originated any given transaction.
 
@@ -156,14 +157,16 @@ Out of those `8843` transactions, the sniffer nodes immediately caught `8438-844
 other transactions, which translates to ~95.5%.
 
 An unexpected empirical result was that "tracing by subtraction" added practically no improvement:
-out of `8843` thousand transactions, only `~5-10` were traced by subtraction, the rest were sniffed independently.
+out of `8843` transactions, only `~5-10` were traced by subtraction, the rest were sniffed independently.
 This means the sniffer nodes are very good at capturing all fluff-phase transactions before any of them are merged
 with any other fluff-phase transactions.
 Theoretically, the only transactions we truly cannot trace are the ones that happened to merge while both of them
 were in stem-phase. Given a typical stem path length is ~10 nodes, this means two transactions have at least
 one node in common in their stem paths, out of [thousands](http://grin-map.cycle42.com/) of nodes on the network.
 
-The logs from the 3 machines and the code analyzing it are published here.
+The code to run the sniffer node is published at [https://github.com/bogatyy/grin](https://github.com/bogatyy/grin) –
+try out running your own!
+The logs from the 3 machines and the code analyzing it are published here in this Github.
 Feel free to reproduce my numbers or play around further. 
 Or, if you used Grin between May 10 and 15, you may be able to find yourself in the logs. ;)
 
@@ -183,54 +186,79 @@ real ones. However, all these decoys still have to belong to the same user, whic
 how much the transaction graph can be actually obfuscated. In other words, if Alice paid Bob using BEAM, the graph
 link would still be undeniably present.
 
-Another good way to frame this attack is to compare it with previous attacks on Monero (
-[one](https://arxiv.org/pdf/1704.04299/), [two](https://eprint.iacr.org/2017/338.pdf)).
-Recall that Monero creates a large anonymity set at the cost of wasted HDD space (in extra on-chain decoys),
-whereas Grin achieves a large anonymity set by time wasted in patient Dandelion.
-After the Monero attack was discovered, it was resolved by increasing the mandatory minimum number of decoys,
-which is another way of saying: we didn't pay enough in HDD space. So in Grin, it's possible that a reasonable way
-to lower the 96% traceability rate is to increase the Dandelion patience timer, implying that Grin users have not
-been paying enough in time to achieve a sufficiently large anonymity set.
+Another good way to frame this attack is to compare it with previous attacks on Monero
+([one](https://arxiv.org/pdf/1704.04299/), [two](https://eprint.iacr.org/2017/338.pdf)).
+Recall that Monero creates a large anonymity set at the cost of wasted HDD space (in extra on-chain decoys).
+After the Monero attack was discovered, it was mitigated by increasing the mandatory minimum number of decoys,
+which is another way of saying: users didn't pay enough in HDD space. 
+
+When defending against this attack, Grin can lower the 96% traceability rate by increasing
+the Dandelion patience timer. In other words, more privacy could come at the expense of paying more in wasted time.
+For a more thorough discussion on mitigations, check out the FAQ right below.
+
+### Acknowledgements
+
+TODO
+
 
 ### FAQ
 
-##### So can and cannot be uncovered? Isn't everything encrypted?
+#### So what can and cannot be uncovered? Isn't everything encrypted?
 The amounts are 100% protected, using a simple and proven technique of Pedersen commitments.
-Further, the IP addresses seem well-protected, since Grin and Beam pioneered integrating Dandelion into
-their implementations. What we uncover is the transaction graph, that is, who paid whom.
+We do not aim to uncover the IP addresses either.
+What we uncover is the transaction graph, that is, who paid whom.
 
-##### What does it mean to trace a transaction? How do you know you've succeeded?
+#### What does it mean to trace a transaction? How do you know you've succeeded?
 A MimbleWimble transaction can have multiple inputs and outputs, but only a single kernel.
 When transactions are aggregated for anonymity, their kernels are aggregated too, so everyone knows how many
-transactions are in there originally (even if they don't know who paid whom).
+transactions are in there originally (although the relationships between inputs and outputs are scrambled).
 So if an attacker sees an aggregated block with 5 kernels, they know they would need to separate all the
 inputs and outputs of that block into 5 buckets to know exactly who paid whom.
 
-Although if they manage to separate the block into 4 buckets, 
+Further, even if they manage to separate the block into 4 buckets, 
 hat would be a drastic reduction of the anonymity set as well.
 
-##### What is an anonymity set? How does it work in ZCash, Monero and MimbleWimble?
+#### What is an anonymity set? How does it work in Zcash, Monero and MimbleWimble?
 
 An anonymity set is about plausible deniability.
-An anonymity set of 1 (e.g. Bitcoin) means everyone knows the payment came from your address.
-An anonymity set of N means there are other N people who could have plausibly been the senders,
-giving you herd immunity.
+An anonymity set of 1 (e.g. in Bitcoin) means everyone knows the payment came from your address.
+An anonymity set of N means there are N people who could have plausibly been the senders,
+giving the real sender herd immunity.
 
-In ZCash, the whole shielded pool is the anonymity set (so everyone is hidden behind everyone else).
+In Zcash, the whole shielded pool is the anonymity set (so everyone is hidden behind everyone else).
 In Monero, you can pick any on-chain UTXOs for decoys, and so you're free to choose your own anonymity set
 (in practice, it tends to be no more than 10-20 other addresses).
 In MimbleWimble, your anonymity set is all the other transactions inside the same block.
 If a block has many transactions, your protections are better, but if no one sent a transaction within the
 block timeline (1 minute), you may be the only person in a block.
 
-##### What are the possible mitigations for the attack?
+#### Can this be mitigated by the user waiting to aggregate with other transactions before broadcasting their own?
 
-The 4% of transactions we could not trace are caused by Dandelion.
+Not really. For two transactions to merge, at least one of them has to be traversing the peer-to-peer gossip network.
+So if no one is the first to broadcast their transaction, no transactions could proceed at all.
+
+Futher, even for a single patient user, this strategy is unlikely to work because of "tracing by subtraction",
+as explaned above.
+
+#### Can this be mitigated by increasing the Dandelion patience timer?
+
+Not really. As explained above, the 4% of transactions we could not trace are indeed caused by Dandelion.
 If Grin was to increase the Dandelion patience timer, that 4% number could plausibly be higher.
-On the other hand, as we explained above, either running more spynodes or turning them into supernode
+On the other hand, either running more spynodes or turning them into supernodes
 (by connecting to more peers) would lead to many more transactions linked, plausibly 99% or more.
 
-##### Do I need to run a supernode for this?
+#### Can this be mitigated by producing a lot of fake tiny transactions?
 
-No. You can link 96% of transactions with a single 200-peer node, probably 90-96% with a default-settings 8-peer
-Grin node, and possibly 99%+ with a true supernode (~3000 peers).
+Not really. The decoy transactions would only matter if they can plausibly look like real transactions.
+Dangling unspent commitments would not help hide the transaction graphs, and sending money to yourself wouldn't either.
+
+The best version of this defense would be to find 5-15 live peers (remember that Mimblewibmle requires participants
+to communicate), convince them to take the dust amounts, and then broadcast the total aggregated transaction as one.
+However, taking a dust amount payment reduces one's privacy and would likely be turned off in safer node
+implementations.
+
+Ultimately, this would look like a worse version of Monero.
+
+#### Do I need to run a supernode for this?
+
+No. You can link 96% of transactions with a regular PC, and possibly 99%+ with a true supernode (~3000 peers).
