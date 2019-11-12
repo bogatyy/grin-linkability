@@ -177,9 +177,9 @@ When defending against this attack, Grin can lower the 96% traceability rate by 
 the Dandelion patience timer. In other words, more privacy could come at the expense of paying more in wasted time.
 For a more thorough discussion on mitigations, check out the FAQ right below.
 
-*Thanks to [Haseeb Qureshi](http://haseebq.com/) for major help in putting together this write-up, to [Oleg Ostroumov](https://medium.com/@olegostroumov), [Elena Nadolinksi](https://www.beanstalk.network/), [Mohamed Fouda](https://medium.com/@fouda) and [Nader Al-Naji](http://www.nadertheory.com/) for reviewing drafts of this post, and [Jake Stutzman](https://twitter.com/jstutzman) ([NEAR](https://nearprotocol.com/)) for preparing the animations.
+*Thanks to [Haseeb Qureshi](http://haseebq.com/) for major help in putting together this write-up, to [Oleg Ostroumov](https://medium.com/@olegostroumov), [Elena Nadolinksi](https://www.beanstalk.network/), [Mohamed Fouda](https://medium.com/@fouda) and [Nader Al-Naji](http://www.nadertheory.com/) for reviewing drafts of this post, and [Jake Stutzman](https://twitter.com/jstutzman) ([NEAR](https://nearprotocol.com/)) for preparing the animations.*
 
-For more of my writing, follow me on Twitter at https://twitter.com/IvanBogatyy.*
+*For more of my writing, follow me on Twitter at https://twitter.com/IvanBogatyy.*
 
 
 ### FAQ
