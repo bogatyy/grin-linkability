@@ -190,7 +190,7 @@ The amounts are 100% protected, using a simple and proven technique of Pedersen 
 #### What does it mean to trace a transaction? How do you know you've succeeded?
 A MimbleWimble transaction can have multiple inputs and outputs, but only a single kernel. When transactions are aggregated for anonymity, their kernels are aggregated too, so everyone knows how many transactions are in there originally (although the relationships between inputs and outputs are scrambled). So if an attacker sees an aggregated block with 5 kernels, they know they would need to separate all the inputs and outputs of that block into 5 transactions to know exactly who paid whom.
 
-Further, even if they manage to separate the block into 4 buckets, that would be a drastic reduction of the anonymity set as well. [[WHY????]]
+Further, even if they manage to separate the block into 4 buckets, that would be a drastic reduction of the anonymity set as well. It would mean that out of 5 transactions, 3 got linked completely, and the other 2 only have each other remaining in the anonymity set.
 
 #### What is an anonymity set? How does it work in Zcash, Monero and MimbleWimble?
 
