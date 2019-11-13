@@ -75,7 +75,7 @@ Grin further modifies this protocol to a version they call "patient Dandelion", 
 the sender's IP address, but also holds transactions in "stem" phase for some time (~10 per each hop on the stem path).
 This gives transactions a chance to aggregate with other transactions before they are broadcast widely.
 
-![](images/stem-fluff.png)
+![](images/stem-fluff.gif)
 *How transactions propagate with Dandelion. Stem phase (maximizing anonymity) followed by fluff phase (maximizing spread)*
 
 The attack uncovers the transaction graph in Grin and does not attempt to uncover the IP addresses.
@@ -122,7 +122,8 @@ As an alternative to the complex business of maintaining a supernode, an attacke
 with regular nodes: if an attacker controls a large percentage of all nodes in the network, the probability that
 every transaction passes one of their sniffer nodes approaches 100%.
 
-**`<Dandelion with a sniffer supernode GIF>`**
+![](images/supernode.gif)
+*A supernode is connected to every other node and will instantly get any transaction that enters fluff phase, before it can be merged with other transactions for anonymity.*
 
 ### Methodology and results
 
@@ -155,7 +156,7 @@ Or, if you used Grin between May 10 and 15, you may be able to find yourself in 
 
 Getting privacy right is extremely hard, as this research demonstrates.
 Even a single flaw in a protocol design can lead to almost the entire transaction graph being reconstructed.
-Luckily the Grin core devs were aware [LINK] that such an attack was theoretically possible, even if the extent
+Luckily the Grin core devs were [aware](https://github.com/mimblewimble/grin/blob/master/doc/grin4bitcoiners.md#if-i-listen-to-transaction-relay-cant-i-just-figure-out-who-they-belong-to-before-being-cut-through) that such an attack was theoretically possible, even if the extent
 and possible solutions were unclear. Mohamed Fouda hypothesized a similar attack in his excellent Grin
 [overview](https://www.tokendaily.co/blog/mimblewimble-the-good-and-the-bad).
 In practice, this attack downgrades Grin's privacy to that of Bitcoin with mandatory address reuse and hidden
@@ -177,7 +178,7 @@ When defending against this attack, Grin can lower the 96% traceability rate by 
 the Dandelion patience timer. In other words, more privacy could come at the expense of paying more in wasted time.
 For a more thorough discussion on mitigations, check out the FAQ right below.
 
-*Thanks to [Haseeb Qureshi](http://haseebq.com/) for major help in putting together this write-up, to [Oleg Ostroumov](https://medium.com/@olegostroumov), [Elena Nadolinksi](https://www.beanstalk.network/), [Mohamed Fouda](https://medium.com/@fouda) and [Nader Al-Naji](http://www.nadertheory.com/) for reviewing drafts of this post, and [Jake Stutzman](https://twitter.com/jstutzman) ([NEAR](https://nearprotocol.com/)) for preparing the animations.*
+*Thanks to [Haseeb Qureshi](http://haseebq.com/) for major help in putting together this write-up and for the anonymity set illustrations. Additional thanks to [Oleg Ostroumov](https://medium.com/@olegostroumov), [Elena Nadolinksi](https://www.beanstalk.network/), [Mohamed Fouda](https://medium.com/@fouda) and [Nader Al-Naji](http://www.nadertheory.com/) for reviewing drafts of this post. And a huge thanks to [Jake Stutzman](https://twitter.com/jstutzman) ([NEAR](https://nearprotocol.com/)) for the Dandelion and block aggregation illustrations.*
 
 *For more of my writing, follow me on Twitter at https://twitter.com/IvanBogatyy.*
 
@@ -208,7 +209,7 @@ Futher, even for a single patient user, this strategy is unlikely to work becaus
 
 #### Can this be mitigated by increasing the Dandelion patience timer?
 
-Not really. As explained above, the 4% of transactions we could not trace are indeed caused by Dandelion. If Grin were to increase the Dandelion patience timer, that 4% number could plausibly be higher. On the other hand, either running more spynodes or turning them into supernodes (by connecting to more peers) would lead to many more transactions linked, plausibly 99% or more.
+Not really. As explained above, the 4% of transactions we could not trace are indeed caused by Dandelion. If Grin were to increase the Dandelion patience timer, that 4% number could plausibly be higher. On the other hand, either running more sniffer nodes or turning them into supernodes (by connecting to more peers) would lead to many more transactions linked, plausibly 99% or more.
 
 #### Can this be mitigated by producing a lot of fake tiny transactions?
 
