@@ -136,8 +136,9 @@ the inputs, the outputs and the kernels.
 During that time frame (roughly blocks from 164696 to 170350, depending on the node), Grin users have sent a total of ~8.8 thousand transactions.
 Recall that transactions have kernels that persist through merging, so we can calculate the total number of transactions
 by adding up the number of kernels in each block.
-Out of those 8.8 thousand transactions, the sniffer nodes immediately caught 8.4 thousand before they could merge with any
-other transactions (stats per node: 8509/8905 AWS-EU, 8438/8843 AWS-US, 8503/8905 Hetzner), which translates to ~95.5% in each case.
+Out of these 8.8 thousand transactions, the sniffer nodes immediately caught 8.4 thousand before they could merge with any
+other transactions (stats per node: 8509 out of 8905 AWS-EU, 8438 out of 8843 AWS-US, 8503 out of 8905 Hetzner),
+which translates to **~95.5% transactions traced** by each node.
 
 An unexpected empirical result was that "tracing by subtraction" added practically no improvement:
 there were only 5-10 transaction in total that were traced by subtraction, the rest were sniffed independently.
