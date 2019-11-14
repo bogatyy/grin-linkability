@@ -92,6 +92,7 @@ If a certain transaction is encountered before it is merged with others, a sniff
 between its inputs and outputs.
 
 ![](images/logger.png)
+
 *Logger plugged into grin/servers/src/common/hooks.rs. There are several places where transactions are handled in the codebase, but this hook allows to store pending transactions as well as confirmed ones, basically everything the node ever processes. The fancy syntax is just Rust's version of printing a vector.*
 
 Even if we don't manage to sniff a particular transaction in the wild, by keeping a full log we can trace
@@ -132,14 +133,14 @@ Two were high-bandwidth AWS nodes, and another I rented on Hetzner.
 Each of the nodes was logging the full composition of every pending transaction it encountered:
 the inputs, the outputs and the kernels.
 
-During that time frame (roughly block `164696` to block `170350`), Grin users have sent a total of `8843` transactions.
+During that time frame (roughly blocks from 164696 to 170350, depending on the node), Grin users have sent a total of ~8.8 thousand transactions.
 Recall that transactions have kernels that persist through merging, so we can calculate the total number of transactions
-by adding up the number of kernels in each block from `164696` to `170350`.
-Out of those `8843` transactions, the sniffer nodes immediately caught `8438-8447` before they could merge with any
-other transactions, which translates to ~95.5%.
+by adding up the number of kernels in each block.
+Out of those 8.8 thousand transactions, the sniffer nodes immediately caught 8.4 thousand before they could merge with any
+other transactions (stats per node: 8509/8905 AWS-EU, 8438/8843 AWS-US, 8503/8905 Hetzner), which translates to ~95.5% in each case.
 
 An unexpected empirical result was that "tracing by subtraction" added practically no improvement:
-out of `8843` transactions, only `~5-10` were traced by subtraction, the rest were sniffed independently.
+there were only 5-10 transaction in total that were traced by subtraction, the rest were sniffed independently.
 This means the sniffer nodes are very good at capturing all fluff-phase transactions before any of them are merged
 with any other fluff-phase transactions.
 Theoretically, the only transactions we truly cannot trace are the ones that happened to merge while both of them
@@ -178,7 +179,7 @@ When defending against this attack, Grin can lower the 96% traceability rate by 
 the Dandelion patience timer. In other words, more privacy could come at the expense of paying more in wasted time.
 For a more thorough discussion on mitigations, check out the FAQ right below.
 
-*Thanks to [Haseeb Qureshi](http://haseebq.com/) for major help in putting together this write-up and for the anonymity set illustrations. Additional thanks to [Oleg Ostroumov](https://medium.com/@olegostroumov), [Elena Nadolinksi](https://www.beanstalk.network/), [Mohamed Fouda](https://medium.com/@fouda) and [Nader Al-Naji](http://www.nadertheory.com/) for reviewing drafts of this post. And a huge thanks to [Jake Stutzman](https://twitter.com/jstutzman) ([NEAR](https://nearprotocol.com/)) for the Dandelion and block aggregation illustrations.*
+*Thanks to [Haseeb Qureshi](http://haseebq.com/) for major help in putting together this write-up and for the anonymity set illustrations. Additional thanks to [Oleg Ostroumov](https://medium.com/@olegostroumov), [Elena Nadolinksi](https://www.beanstalk.network/), [Mohamed Fouda](https://medium.com/@fouda) and [Nader Al-Naji](http://www.nadertheory.com/) for reviewing drafts of this post. And a huge thanks to [Jake Stutzman](https://twitter.com/jstutzman) ([NEAR Protocol](https://nearprotocol.com/)) for the Dandelion and block aggregation illustrations.*
 
 *For more of my writing, follow me on Twitter at https://twitter.com/IvanBogatyy.*
 
