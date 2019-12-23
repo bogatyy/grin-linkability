@@ -161,7 +161,7 @@ Even a single flaw in a protocol design can lead to almost the entire transactio
 Luckily the Grin core devs were [aware](https://github.com/mimblewimble/grin/blob/master/doc/grin4bitcoiners.md#if-i-listen-to-transaction-relay-cant-i-just-figure-out-who-they-belong-to-before-being-cut-through) that such an attack was theoretically possible, even if the extent
 and possible solutions were unclear. Mohamed Fouda hypothesized a similar attack in his excellent Grin
 [overview](https://www.tokendaily.co/blog/mimblewimble-the-good-and-the-bad).
-In practice, this attack downgrades Grin's privacy to that of Bitcoin with mandatory address reuse and hidden
+In practice, this attack downgrades Grin's privacy to that of Bitcoin with mandatory nonreusable addresses and hidden
 amounts—which may actually be sufficient for many use cases!
 
 Beam, another cryptocurrency built following the MimbleWimble protocol, is similarly vulnerable to the best of my
